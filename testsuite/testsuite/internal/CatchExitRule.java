@@ -4,13 +4,12 @@ import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
-
 public class CatchExitRule implements MethodRule {
 
-    @Override
     public Statement apply(final Statement base, FrameworkMethod method,
-            Object arg) {
+                           Object arg) {
         return new Statement() {
+
             @Override
             public void evaluate() throws Throwable {
 
