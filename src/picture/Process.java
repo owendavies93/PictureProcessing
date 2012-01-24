@@ -34,52 +34,26 @@ public class Process {
 	}
     }
 
-    public Picture rotate(int angle) {
-	double deg2rad = Math.toRadians(angle);
-	int nW = (int) (Math.abs((h * Math.sin(deg2rad))) + Math.abs((w * Math
-		.cos(deg2rad))));
-	int nH = (int) (Math.abs((h * Math.cos(deg2rad))) + Math.abs((w * Math
-		.sin(deg2rad))));
-	Picture temp = Utils.createPicture(nW, nH);
+    public Picture rotate(Picture p, int angle) {
+	if (angle > 0) {
+	    return rotate(rotateNinety(p), angle - 90);
+	} else {
+	    return p;
+	}
+    }
 
-	double hw = ((double) w - 1) / 2;
-	double hh = ((double) h - 1) / 2;
+    private Picture rotateNinety(Picture p) {
+	int pW = p.getWidth();
+	int pH = p.getHeight();
+	Picture temp = Utils.createPicture(pH, pW);
 
-	for (int i = 0; i < nW; i++) {
-	    for (int j = 0; j < nH; j++) {
-		double[][] nc = rotateCs(new double[][] { { i - hw },
-			{ j - hh } }, deg2rad);
-		try {
-		    temp.setPixel((int) (nc[0][0] + hw), (int) (nc[1][0] + hh),
-			    pic.getPixel(i, j));
-
-		} catch (ArrayIndexOutOfBoundsException e) {
-		    System.out.println(i + ", " + j);
-		}
+	for (int i = 0; i < pW; i++) {
+	    for (int j = 0; j < pH; j++) {
+		temp.setPixel(pH - 1 - j, i, p.getPixel(i, j));
 	    }
 	}
+
 	return temp;
-    }
-
-    public double[][] rotateCs(double[][] cs, double angle) {
-	double[][] rotateM = matrixMultiply(
-		new double[][] { { Math.cos(angle), -Math.sin(angle) },
-			{ Math.sin(angle), Math.cos(angle) } }, cs);
-	double[][] res = { { (double) Math.round(rotateM[0][0] * 10) / 10 },
-		{ (double) Math.round(rotateM[1][0] * 10) / 10 } };
-	return res;
-    }
-
-    private double[][] matrixMultiply(double[][] m, double[][] n) {
-	double[][] res = new double[m.length][n[0].length];
-	for (int i = 0; i < res.length; i++) {
-	    for (int k = 0; k < res[0].length; k++) {
-		for (int j = 0; j < n.length; j++) {
-		    res[i][k] += (m[i][j] * n[j][k]);
-		}
-	    }
-	}
-	return res;
     }
 
     public Picture flip(String dir) {
